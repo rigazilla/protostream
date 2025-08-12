@@ -73,7 +73,7 @@ jobs:
           # Wait up to 5 hours (20 seconds)
           SECONDS=0
           while kill -0 $MVN_PID 2>/dev/null; do
-            if [ $SECONDS -ge 20 ]; then
+            if [ $SECONDS -ge 15 ]; then
               echo "Timeout reached. Dumping Java threads..."
               # Find all Java processes and dump threads
               for pid in $(pgrep java); do
