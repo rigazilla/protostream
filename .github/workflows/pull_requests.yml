@@ -66,7 +66,27 @@ jobs:
           cache: maven
 
       - name: JDK EA Tests
-        run: ./mvnw -B clean install artifact:compare -Dmaven.test.failure.ignore=true -Dansi.strip=true
+        run: |
+          set -e
+          ./mvnw -B clean install artifact:compare -Dmaven.test.failure.ignore=true -Dansi.strip=true &
+          MVN_PID=$!
+          # Wait up to 5 hours (20 seconds)
+          SECONDS=0
+          while kill -0 $MVN_PID 2>/dev/null; do
+            if [ $SECONDS -ge 20 ]; then
+              echo "Timeout reached. Dumping Java threads..."
+              # Find all Java processes and dump threads
+              for pid in $(pgrep java); do
+                echo "Dumping threads for Java process $pid"
+                jstack -l $pid || echo "jstack failed for $pid"
+              done
+              # Kill the mvn process
+              kill -9 $MVN_PID
+              exit 1
+            fi
+            sleep 30
+          done
+          wait $MVN_PID
 
       - name: Test Logs
         uses: actions/upload-artifact@v4
