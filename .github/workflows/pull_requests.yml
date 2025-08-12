@@ -78,7 +78,7 @@ jobs:
               # Find all Java processes and dump threads
               for pid in $(pgrep java); do
                 echo "Dumping threads for Java process $pid"
-                jstack -l $pid || echo "jstack failed for $pid"
+                jstack -l $pid | tee jstack-$pid.txt || echo "jstack failed for $pid"
               done
               # Kill the mvn process
               kill -9 $MVN_PID
@@ -93,4 +93,6 @@ jobs:
         if: success() || failure()
         with:
           name: jdk-ea-test-results
-          path: "**/target/*-reports*/**/TEST-*.xml"
+          path: |
+            "**/target/*-reports*/**/TEST-*.xml"
+            "**/jstack-*.txt"
