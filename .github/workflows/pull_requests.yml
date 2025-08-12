@@ -84,7 +84,7 @@ jobs:
               kill -9 $MVN_PID
               exit 1
             fi
-            sleep 30
+            sleep 5
           done
           wait $MVN_PID
 
