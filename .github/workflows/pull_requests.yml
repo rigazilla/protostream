@@ -94,5 +94,5 @@ jobs:
         with:
           name: jdk-ea-test-results
           path: |
-            "**/target/*-reports*/**/TEST-*.xml"
-            "**/jstack-*.txt"
+            **/target/*-reports*/**/TEST-*.xml
+            **/jstack-*.txt
